@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 import { pipeMiddlewares } from './pipeMiddlewares';
 
-export function getCallingFunctionName() {
+function getCallingFunctionName() {
   const error = new Error();
   const stackTrace = String(error.stack).split('\n');
   // console.log('track::::', stackTrace)
@@ -12,16 +12,28 @@ export function getCallingFunctionName() {
   return functionName;
 }
 
+type PropOptions = { 
+  nameStore: string; 
+  persist: {
+    state: any
+    storage?: any
+  };
+  computeState: ()=> void; 
+  env: string; 
+  initialState: any;
+  actions: (arg: any) => void;
+}
 
-export function getCustomStore<T>(options) {
+export function getCustomStore<T>(options: PropOptions) {
 
   const storeInstance = pipeMiddlewares({
     nameStore: options.nameStore,
-    persistStore: options.persistStore,
+    persist: options.persist ?? { state: null, storage: null },
     computeState: options.computeState,
+    env: options.env
 });
 
-  return (preloadedState: Partial<T>) => storeInstance((set, get) => ({
+  return (preloadedState: Partial<T>) => storeInstance((set: (arg0: (base?: any, ...args: unknown[]) => any, arg1: boolean, arg2: string) => void, get: () => any) => ({
     ...options.initialState,
     ...preloadedState,
     name: options.nameStore,

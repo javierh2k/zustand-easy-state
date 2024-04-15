@@ -5,7 +5,8 @@ import type { Client } from "./store/Client";
 const AppClients = () => {
   const {
     client,
-    actions: { saveClient },
+    count,
+    actions: { saveClient, counter },
   } = useClientStore();
 
   useEffect(() => {
@@ -27,6 +28,8 @@ const AppClients = () => {
       <h3>
         Cliente: {client.name} {client.lastname}
       </h3>
+      count: {count}
+      <button onClick={counter}>counter +1</button>
     </>
   );
 };

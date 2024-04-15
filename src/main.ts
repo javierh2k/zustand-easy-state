@@ -1,11 +1,11 @@
-import { createStore } from "./createStore";
-import { getCustomStore } from "./getCustomStore";
-import { getHookStore } from "./getHookStore";
-import { getProvider } from "./getProvider";
+import { createHookStore } from './createHookStore'
+import {getProvider} from './getProvider';
+import {getHookStore } from './getHookStore'
+import {getCustomStore} from './getCustomStore'
 
 export {
     getHookStore,
     getProvider,
     getCustomStore,
-    createStore
+    createHookStore
 }

@@ -1,12 +1,23 @@
-import { create } from "zustand";
-import { storePersist, storeDevTools, storeComputed, storeSubscribe } from './middlewares.js';
-import { pipe } from './pipe.js';
+import { create } from 'zustand';
+import { createJSONStorage } from 'zustand/middleware'
 
-export const pipeMiddlewares = ({ nameStore, persistStore, computeState }) => pipe(
-  // log,
-  storeDevTools(nameStore),
-  storePersist(nameStore, persistStore),
-  storeComputed(nameStore, computeState),
+import {
+  storePersist,
+  storeDevTools,
+  storeComputed,
   storeSubscribe,
-  create
-);
+} from './middlewares';
+import { pipe } from './pipe';
+// storeSubscribe
+
+export const pipeMiddlewares = ({ nameStore, env, persist, computeState }) =>
+  {
+    return pipe(
+      // log,
+      storeDevTools(nameStore, env),
+      storePersist(nameStore, persist?.state, persist.storage ?? createJSONStorage(() => localStorage)),
+      storeComputed(nameStore, computeState),
+      storeSubscribe,
+      create,
+    );
+  }
