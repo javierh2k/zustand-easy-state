@@ -7,6 +7,12 @@ function actions(get: ()=>Store): Actions['actions'] {
     get().setDraft((draft)=> { draft.processing = false });
   }
 
+  function counter() {
+    get().setDraft((draft)=> { draft.count++ });
+  }
+
+
+
   async function saveClient(client: Client) {
 
     get().setDraft((draft) => {
@@ -16,7 +22,8 @@ function actions(get: ()=>Store): Actions['actions'] {
 
   return {
     onLoad,
-    saveClient
+    saveClient,
+    counter
   };
 }
 

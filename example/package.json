@@ -9,7 +9,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "react-app-polyfill": "^3.0.0"
+    "react-app-polyfill": "^3.0.0",
+    "react-secure-storage": "^1.3.2"
   },
   "alias": {
     "react": "../node_modules/react",
@@ -19,8 +20,8 @@
   "devDependencies": {
     "@types/react": "^18.0.31",
     "@types/react-dom": "^18.0.11",
-    "vite": "latest",
     "@vitejs/plugin-react": "latest",
-    "typescript": "^4"
+    "typescript": "^4",
+    "vite": "latest"
   }
 }

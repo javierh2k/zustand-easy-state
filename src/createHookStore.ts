@@ -13,9 +13,10 @@ import { pipeMiddlewares } from './pipeMiddlewares';
 function getCallingFunctionName() {
   const error = new Error();
   const stackTrace = String(error.stack).split('\n');
-  const f = stackTrace.findIndex((line) => line.includes('setDraft'));
+  // console.log('track::::', stackTrace)
+  const f = stackTrace.findIndex((line) => line.includes('__awaiter'));
   const functionName = stackTrace[f + 1].trim().split(' ')[1];
-  // console.log(f,'functionName:::', functionName)
+  // console.log('functionName:::', functionName)
   ///\s+at\s+(\S+)/.exec(callerLine)[1];
   return functionName;
 }
@@ -48,7 +49,7 @@ export function createHookStore(options: OptionsStore) {
     name: options.nameStore,
     setDraft: (fn: any, name: string = '') => {
       const actionName = name || getCallingFunctionName();
-      console.log({actionName})
+      
       set(produce(get(), fn), false, actionName);
     },
     actions: options.actions(get),

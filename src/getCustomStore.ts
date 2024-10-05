@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 import { pipeMiddlewares } from './pipeMiddlewares';
 
-export function getCallingFunctionName() {
+function getCallingFunctionName() {
   const error = new Error();
   const stackTrace = String(error.stack).split('\n');
   // console.log('track::::', stackTrace)

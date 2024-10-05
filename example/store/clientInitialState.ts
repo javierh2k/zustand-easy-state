@@ -3,6 +3,7 @@ import { Client } from "./Client";
 export interface ClientState {
   name: string;
   client: Client;
+  count: number;
   processing?: boolean;
   saving?: boolean;
   message: string;
@@ -15,6 +16,7 @@ export interface ClientState {
 const clientInitialState = {
   saving: false,
   message: '',
+  count: 1,
   csrfToken: '',
   hydrated: false,
   processing: false,

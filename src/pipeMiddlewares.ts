@@ -6,6 +6,7 @@ export const pipeMiddlewares = ({ nameStore, persistStore, computeState, env }) 
   // log,
   storeDevTools(nameStore, env),
   storePersist(nameStore, persistStore),
+  // storePersist(nameStore, persist?.state, persist.storage ?? createJSONStorage(() => localStorage)),
   storeComputed(nameStore, computeState),
   storeSubscribe,
   create

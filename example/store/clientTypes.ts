@@ -7,6 +7,7 @@ type DraftUpdater<T> = (draft: Draft<T>) => void;
 
 export interface Actions {
     actions: {
+        counter: () => void;
         onLoad: (initialState: Partial<ClientState> ) => void;
         saveClient: (client: Client) => Promise<void>;
     };
