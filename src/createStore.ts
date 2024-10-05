@@ -4,6 +4,29 @@ import { pipeMiddlewares } from './pipeMiddlewares';
 
 import { createTrackedSelector } from 'react-tracked';
 
+export const updateNestedState = (set, keyPath, value) => {
+  set(
+    (state) => {
+      const keys = keyPath.split('.');
+ 
+ 
+      let nestedState = state;
+ 
+ 
+      keys.slice(0, -1).forEach((key) => {
+        nestedState = nestedState[key];
+      });
+      nestedState[keys[keys.length - 1]] = value;
+ 
+ 
+      return { ...state };
+    },
+    true,
+    `Transient:${keyPath}`,
+  );
+ };
+ 
+ 
 export function getCallingFunctionName() {
   const error = new Error();
   const stackTrace = String(error.stack).split('\n');
@@ -21,6 +44,7 @@ export function createStore(options) {
     nameStore: options.nameStore,
     persistStore: options.persistStore,
     computeState: options.computeState,
+    env: options.env
   });
 
   type StoreType = ReturnType<typeof storeInstance>;
@@ -28,10 +52,13 @@ export function createStore(options) {
   const stored = storeInstance((set, get) => ({
     ...options.initialState,
     name: options.nameStore,
-    setDraft: (fn: any, name: string = '') => {
+    setDraft: (fn: any, name: string = '', transient=false) => {
       const actionName = name || getCallingFunctionName();
-      set(produce(get(), fn), false, actionName);
+      set(produce(get(), fn), transient, actionName,);
     },
+    setTransient: (path: string, value: any) =>
+      updateNestedState(set,path,value)
+    ,
     actions: options.actions(get),
   }))
   return createTrackedSelector(stored) as StoreType

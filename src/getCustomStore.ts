@@ -19,6 +19,7 @@ export function getCustomStore<T>(options) {
     nameStore: options.nameStore,
     persistStore: options.persistStore,
     computeState: options.computeState,
+    env: options.env
 });
 
   return (preloadedState: Partial<T>) => storeInstance((set, get) => ({

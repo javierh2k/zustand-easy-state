@@ -12,7 +12,7 @@ export function getHookStore<T>(ctx: any) {
     }
 
     if (instance === 'instance') {
-      return storeWizard.instance;
+      return {store: storeWizard.store(), instance: storeWizard.instance};
     }
 
     return storeWizard.store();
