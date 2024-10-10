@@ -11,7 +11,10 @@ import { produce } from 'immer';
 
 
 import PubStore from './PubStore';
+import { pipe } from './pipe';
+// import { computed } from './customComputedMiddleware';
 
+// export const pipe = (...ops) => ops.reduce((a, b) => (...args) => b(a(...args)));
 
 export const updateNestedState = (set, keyPath, value) => {
  set(
@@ -68,13 +71,19 @@ export const bearStore = Publish.defineStore<BearState>('bearStore', (set) => ({
 type CreateStoreProps<T> = {
  name: string;
  env: string;
- logger?: false;
- initialState: Omit<T, 'actions' | 'setDraft' | 'setOwnerValueTransient'>;
+ logger?: boolean;
+ reduxDevTool?: boolean;
+ initialState: Omit<T, 'actions' | 'setDraft' | 'setTransient'>;
  actions: (get: () => T, set?: any) => void;
  persistStore?: {
    enabled: boolean;
    props: (state: Omit<T, 'actions'>) => Partial<Omit<T, 'actions'>>;
  };
+ computeState?: {
+  enabled: boolean,
+  actions: any,
+ },
+ middlewares?: any[];
 };
 
 
@@ -83,12 +92,15 @@ export function createStoreMFE<T extends object>({
  persistStore,
  env,
  logger,
+ reduxDevTool,
+//  computeState,
  initialState,
  actions,
+ middlewares = [],
 }: CreateStoreProps<T>) {
  const storeDevTools = (state) =>
-   devtools(state, { name, enabled: env === 'development' });
-
+   devtools(state, { name, enabled: reduxDevTool || env === 'development' });
+//  console.log({env, bol: env === 'development'})
 
  const enableLogging = logger; // ?? (window as any).zustandLogger;
  const storePersisted = (state) =>
@@ -100,8 +112,10 @@ export function createStoreMFE<T extends object>({
        })
      : state;
 
+      //  console.log(enableLogging, 'enableLogging')
 
- const storeLogger = (config) => (set, get, api) =>
+
+       const storeLogger = (config) => (set, get, api) =>
    config(
      (args) => {
        if (enableLogging) {
@@ -117,11 +131,6 @@ export function createStoreMFE<T extends object>({
            'color: #9E9E9E; font-weight: bold;',
            prevState,
          );
-         // console.log(
-         //   '%caction    ',
-         //   'color: #03A9F4; font-weight: bold;',
-         //   args,
-         // );
          set(args);
 
 
@@ -142,6 +151,10 @@ export function createStoreMFE<T extends object>({
      api,
    );
 
+  // const storeComputed = (name) => (state) =>
+  //   computeState?.enabled ? computed(state, computeState.actions, name) : state;
+// storeComputed
+   const pipes = pipe(storeDevTools, storePersisted,  storeLogger, ...middlewares);
 
  const instance = Publish.defineStore<
    T,
@@ -153,11 +166,9 @@ export function createStoreMFE<T extends object>({
  >(
    name,
    subscribeWithSelector(
-     storePersisted(
-       storeLogger(
-         storeDevTools((set, get) => ({
+     pipes((set, get) => ({
            ...initialState,
-           setOwnerValueTransient: (path: string, value: string) =>
+           setTransient: (path: string, value: string) =>
              updateNestedState(set, path, value),
            setDraft: (fn: any, actionNameProp = '', transient = false) => {
              const actionName = actionNameProp || getCallingFunctionName();
@@ -169,8 +180,7 @@ export function createStoreMFE<T extends object>({
 
            actions: actions(get, set),
          })),
-       ),
-     ),
+
    ),
  );
 
@@ -206,7 +216,7 @@ export function createStoreMFE<T extends object>({
 
 // export type StoreBear = Actions &
 //  State & {
-//    setOwnerValueTransient: (path: string, value: string) => void;
+//    setTransient: (path: string, value: string) => void;
 //    setDraft: (fn: any, name?: string, transient?: boolean) => void;
 //  };
 

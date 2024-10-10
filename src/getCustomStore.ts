@@ -19,7 +19,10 @@ export function getCustomStore<T>(options) {
     nameStore: options.nameStore,
     persistStore: options.persistStore,
     computeState: options.computeState,
-    env: options.env
+    // env: options.env || '',
+    reduxDevTool: options.reduxDevTool,
+    logger: options.logger,
+    middlewares: options.middlewares || []
 });
 
   return (preloadedState: Partial<T>) => storeInstance((set, get) => ({

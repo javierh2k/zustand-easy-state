@@ -41,9 +41,7 @@ export const storePersist = (name, persistStore) => (state) =>
       })
     : state;
 
-export const storeDevTools = (name, env) => (state) =>
-  // eslint-disable-next-line no-undef
-  env === 'development' ? devtools(state, { name }) : state;
+export const storeDevTools = (name, reduxDevTool) => (state) => devtools(state, { name, enabled: reduxDevTool });
 
 export const storeSubscribe = (state) => subscribeWithSelector(state);
 

@@ -28,10 +28,13 @@ type OptionsStore = {
     state: any
     storage?: any
   };
-  computeState: (state, prevState)=> void; 
+  computeState?: (state, prevState)=> void; 
   env: string; 
   initialState: any;
   actions: (get: any) => void;
+  reduxDevTool?: boolean;
+  logger?: boolean;
+  middlewares?: [any]
 }
 
 export function createHookStore(options: OptionsStore) {
@@ -39,7 +42,12 @@ export function createHookStore(options: OptionsStore) {
     nameStore: options.nameStore,
     persistStore: options.persist ?? { state: null, storage: null },
     computeState: options.computeState,
-    env: options.env
+    // env: options.env
+    reduxDevTool: options.reduxDevTool,
+    logger: options.logger,
+    middlewares: options.middlewares || []
+
+    
   });
 
   type StoreType = ReturnType<typeof storeInstance>;

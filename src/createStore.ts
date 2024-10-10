@@ -44,7 +44,10 @@ export function createStore(options) {
     nameStore: options.nameStore,
     persistStore: options.persistStore,
     computeState: options.computeState,
-    env: options.env
+    reduxDevTool: options.reduxDevTool,
+    logger: options.logger,
+    middlewares: options.middlewares || []
+
   });
 
   type StoreType = ReturnType<typeof storeInstance>;
