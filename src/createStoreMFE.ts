@@ -22,7 +22,7 @@ export const updateNestedState = (set, keyPath, value) => {
      const keys = keyPath.split('.');
 
 
-     let nestedState = state;
+     let nestedState = {...state};
 
 
      keys.slice(0, -1).forEach((key) => {
@@ -31,7 +31,7 @@ export const updateNestedState = (set, keyPath, value) => {
      nestedState[keys[keys.length - 1]] = value;
 
 
-     return { ...state };
+     return nestedState;
    },
    true,
    `Transient:${keyPath}`,
@@ -170,11 +170,14 @@ export function createStoreMFE<T extends object>({
            ...initialState,
            setTransient: (path: string, value: string) =>
              updateNestedState(set, path, value),
-           setDraft: (fn: any, actionNameProp = '', transient = false) => {
+           setDraft: (fn: any, actionNameProp = '', transientObject) => {
              const actionName = actionNameProp || getCallingFunctionName();
 
-
-             set(produce(get(), fn), transient, actionName);
+            if(!!transientObject){
+              set(transientObject, true)
+            }else{
+              set(produce(get(), fn), false, actionName);
+            }
            },
 
 

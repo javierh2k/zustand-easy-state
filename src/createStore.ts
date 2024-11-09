@@ -10,7 +10,7 @@ export const updateNestedState = (set, keyPath, value) => {
       const keys = keyPath.split('.');
  
  
-      let nestedState = state;
+      let nestedState = {...state};
  
  
       keys.slice(0, -1).forEach((key) => {
@@ -62,6 +62,10 @@ export function createStore(options) {
     setTransient: (path: string, value: any) =>
       updateNestedState(set,path,value)
     ,
+    setTransientDraft: (fn: any, name: string = '') => {
+      const actionName = name || getCallingFunctionName();
+      set(produce(get(), fn), true, actionName);
+    },
     actions: options.actions(get),
   }))
   return createTrackedSelector(stored) as StoreType
